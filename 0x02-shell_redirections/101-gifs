@@ -1,0 +1,2 @@
+#!/bin/bash
+find . -tpye f -name "*.gif" -printf "4f\n" |rev |cut d'.' -f 2- |rev | LC_ALL=C sort -f
