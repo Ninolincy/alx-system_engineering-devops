@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-#displays "To infinity and beyond" indefinitely with
-#a sleep 2 in between each iteration.
-#displays "I am invincible!!!" in between each iteration.
+#  Displays "To infinity and beyond" indefinitely with
+#+ a sleep 2 in between each iteration.
+#  Displays "I am invincible!!!" in between each iteration.
 
 while true
 do
