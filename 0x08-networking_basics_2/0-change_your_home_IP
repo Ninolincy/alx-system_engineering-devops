@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run this script as root (sudo)."
+  exit 1
+fi
+
+# Backup the original /etc/hosts
+cp /etc/hosts /etc/hosts.backup
+
+# Update the /etc/hosts file
+echo '127.0.0.2 localhost' > /tmp/temp_hosts
+echo '8.8.8.8 facebook.com' >> /tmp/temp_hosts
+grep -vx '127.*localhost' /etc/hosts >> /tmp/temp_hosts
+
+# Replace /etc/hosts with the updated file
+mv /tmp/temp_hosts /etc/hosts
+
+# Remove temporary files
+rm /tmp/hold

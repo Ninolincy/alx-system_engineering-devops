@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Print the IP addresses of attached network interfaces
+
+ip -4 addr show | awk '/inet/ {split($2, a, "/"); print a[1]}'
