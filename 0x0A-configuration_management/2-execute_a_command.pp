@@ -1,5 +1,5 @@
-# Use exec to kill the process killmenow
-exec {'kill-killmenow':
+# kill the process killmenow
+exec {'pkill':
 	command => 'pkill killmenow',
-	path 	=> '/usr/bin';
+	path 	=> '/usr/bin',
 	}
