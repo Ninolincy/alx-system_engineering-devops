@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# give me a page
+
+sudo apache2 service start
