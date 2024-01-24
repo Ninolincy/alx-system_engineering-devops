@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-# give me a page
+# fixes apache server and give me a page
 
-sudo apache2 service start
+service apache2 start
