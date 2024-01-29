@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# set up a web server
+
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo mkdir -p /var/www/html
+sudo sh -c 'echo "Hello World!" > /var/www/html/index.html'
+
+# Configure redirection for /redirect_me
+# shellcheck disable=SC1004
+sudo sed -i '/server_name _;/a \
+        location /redirect_me {\n\
+                rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;\n\
+        }\n' /etc/nginx/sites-available/default
+
+# Create a custom 404 HTML page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html
+
+# Modify the Nginx configuration to use the custom 404 page
+# shellcheck disable=SC1004
+sudo sed -i '/server_name _;/a \
+        error_page 404 /custom_404.html;\n\
+        location = /custom_404.html {\n\
+                internal;\n\
+        }\n' /etc/nginx/sites-available/default
+
+sudo echo 'add_header X-Served-By $hostname;' | sudo tee /etc/nginx/conf.d/0-custom-header.conf
+sudo service nginx restart

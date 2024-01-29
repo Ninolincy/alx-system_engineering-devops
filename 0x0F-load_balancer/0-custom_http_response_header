@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Install and configure HAProxy load balancer
+
+# Update the package list
+sudo apt-get update
+
+# Install HAProxy with automatic "yes" response to prompts
+sudo apt-get -y install haproxy
+
+# Enable HAProxy by adding 'ENABLED=1' to the /etc/default/haproxy file at line 8
+sudo sed -i "8 a\ENABLED=1\n" /etc/default/haproxy
+
+# Configure HAProxy by appending a frontend and backend configuration to /etc/haproxy/haproxy.cfg
+sudo sed -i "$ a\
+frontend load_balancer\n\
+\tbind 0.0.0.0:80\n\
+\tmode http\n\
+\tdefault_backend web_servers\n\
+\n\
+backend web_servers\n\
+\tbalance roundrobin\n\
+\tserver 91013-web-01 54.152.129.123:80\n\
+\tserver 91013-web-02 35.175.135.158:80" /etc/haproxy/haproxy.cfg
+
+# Start the HAProxy service
+sudo service haproxy restart
