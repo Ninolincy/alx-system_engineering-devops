@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#install and configure HAproxy
+
+#update and upgrade package lists
+sudo apt-get update
+
+#install HAproxy
+sudo apt-get install -y haproxy
+
+#enable HAproxy by adding ENABLED=1 to /etc/default/haproxy
+sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+
+#configure HAproxy by appending a frontend and backend to /etc/haproxy/haproxy.cfg
+sudo sed -i '$ a\
+frontend load_balancer\nl
+    bind *:80\n\
+    stats uri /haproxy?stats\n\
+    default_backend webservers\n\
+\n\
+backend webservers\n\
+    balance roundrobin\n\
+    server 249184-web-01 18.234.249.64:80 check\n\
+    server 249184-web-02 100.24.253.247:80 check' /etc/haproxy/haproxy.cfg
+
+#start HAproxy
+sudo service haproxy start
+
+#install and configure certbot
+if dpkg -l | grep -q certbot; then
+    echo "certbot already installed"
+else
+    sudo apt-get install -y certbot
+fi
+
+#create a certificate using certbot
+if sudo certbot certificates | grep -q 'www.holberton.online'; then
+    echo "certificate for www.holberton.online already exists"
+else
+    echo "creating certificate for www.holberton.online"
+    sudo certbot certonly --standalone -d www.holberton.online -d holberton.online
+fi
+
+#configure HAproxy with ssl certificate
+config="\
+
+frontend lb-01
+    bind *:80
+    mode http
+    option httplog
+    option forwardfor
+    redirect scheme https code 301 if !{ ssl_fc }
+     # default_backend backend_servers
+
+frontend lb-01-ssl\n\
+    bind *:443 ssl crt /etc/ssl/holberton.online/holberton.online.pem\n\
+    reqadd X-Forwarded-Proto:\ https\n\
+    default_backend webservers\n\
+
+frontend letsencrypyt-frontend
+    bind *:80
+    mode http
+    option forwardfor
+    acl letsencrypt-acl path_beg -i /.well-known/acme-challenge/
+    use_backend letsencrypt-backend if letsencrypt-acl
+
+backend webservers
+    balance roundrobin
+    server 249184-web-01 18.234.249.64:80 check\n\
+    server 249184-web-02 100.24.253.247:80 check
+
+backend letsencrypt-backend
+    mode http
+    server letsencrypt-server 34.201.164.244:8888
+"
+sudo echo '$config' | sudo tee -a /etc/haproxy/haproxy.cfg
+
+
+#restart HAproxy
+sudo service haproxy restart
+

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Configure your domain zone so that the subdomain www points to your load-balancer IP (lb-01)
+
+#check subdomains
+check_subdomain() {
+    local domain=$1
+    local subdomain=$2
+
+    if [ -z "$subdomain" ]; then
+        subdomains=(www lb-01 web-01 web-02)
+    else
+        subdomains=("$subdomain")
+    fi
+
+    for sub in "${subdomains[@]}"; do
+        result=$(dig +short "$sub"."$domain")
+        if [ -z "$result" ]; then
+            echo "Subdomain $sub is not configured or does not exist."
+        else
+            echo "Subdomain $sub ia A record and points to $result"
+        fi
+    done
+}
+
+# check if both subdomain and domain are configured
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
+
+#extract domain and subdomain from arguments
+domain=$1
+subdomain=$2
+
+#check subdomain
+check_subdomain "$domain" "$subdomain"
