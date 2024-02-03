@@ -1,7 +1,7 @@
 #Configuration file for locat SSH client
 
-Host 18.234.249.64
-    HostName 18.234.249.64
+Host 3.90.81.193
+    HostName 3.90.81.193
     User ubuntu
     IdentityFile ~/.ssh/school
     PreferredAuthentication publickey
