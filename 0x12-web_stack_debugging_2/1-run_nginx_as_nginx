@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# bash script that runs nginx as the nginx user
+# and listens on all active IPs on port 8080
+# set a user in the config file by replacing "#user" and it's value
+sed -i 's/#user www-data/user nginx/' /etc/nginx/nginx.conf
+#replace port 80 with 8080 in the default file
+sed -i 's/80/8080/' /etc/nginx/sites-available/default
+# give permissions
+chmod 644 /etc/nginx/nginx.conf
+#apache might kill the process
+pkill apache2
+# start nginx with new user
+sudo  -u nginx service nginx start
