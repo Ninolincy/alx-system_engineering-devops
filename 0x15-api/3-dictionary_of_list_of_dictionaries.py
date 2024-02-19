@@ -7,17 +7,16 @@ import json
 
 
 if __name__ == "__main__":
-    baseUrl = "https://jsonplaceholder.typicode.com/users"
-
-    response = requests.get(baseUrl)
+    url = "https://jsonplaceholder.typicode.com/users"
+    response = requests.get(url)
     users = response.json()
 
     dict = {}
     for user in users:
         userId = user.get("id")
         username = user.get("username")
-        baseUrl = "https://jsonplaceholder.typicode.com/users/{}".format(userId)
-        url = baseUrl + "/todos"
+        url = "https://jsonplaceholder.typicode.com/users/{}".format(userId)
+        url = url + "/todos"
 
         response = requests.get(url)
         tasks = response.json()

@@ -18,7 +18,7 @@ if __name__ == "__main__":
     tasks = response.json()
 
     with open("{}.csv".format(employeeId), 'w') as file:
-              for task in tasks:
-                file.write('"{}","{}","{}","{}"\n'
-                           .format(employeeId, username, task.get("completed"), 
-                                   task.get("title")))
+        for task in tasks:
+            file.write('"{}","{}","{}","{}"\n'
+                       .format(employeeId, username, task.get("completed"),
+                               task.get("title")))
