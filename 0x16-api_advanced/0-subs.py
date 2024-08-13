@@ -7,7 +7,6 @@ number of subscribers for a given subreddit
 import json
 import requests
 
-
 def number_of_subscribers(subreddit):
     """Query the number of subscribers to a subreddit."""
     url = f"https://www.reddit.com/r/{subreddit}/about.json"
